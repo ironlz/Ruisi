@@ -27,7 +27,7 @@
             android:maxLines="1"
             android:textSize="16sp" />
 
-        <pl.droidsonroids.gif.GifImageView
+        <ImageView
             android:id="@+id/gifview"
             android:layout_width="100dp"
             android:layout_height="50dp"

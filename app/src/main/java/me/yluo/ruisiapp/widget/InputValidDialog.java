@@ -2,6 +2,9 @@ package me.yluo.ruisiapp.widget;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -11,6 +14,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -32,7 +36,7 @@ import pl.droidsonroids.gif.GifImageView;
  */
 public class InputValidDialog extends DialogFragment {
     private EditText input;
-    private GifImageView gifImageView;
+    private ImageView gifImageView;
     private ProgressBar progressBar;
     private TextView statusView;
     private String hash = "";
@@ -166,7 +170,8 @@ public class InputValidDialog extends DialogFragment {
         }
 
         //Log.v("===", HttpUtil.getStore(getActivity()).getCookie());
-        HttpUtil.getClient().addHeader("Referer", App.getBaseUrl() + UrlUtils.getLoginUrl());
+        String refererURI = App.getBaseUrl() + UrlUtils.getLoginUrl();
+        HttpUtil.getClient().addHeader("Referer", refererURI);
         HttpUtil.get(url, new ResponseHandler() {
             @Override
             public void onStart() {
@@ -178,9 +183,11 @@ public class InputValidDialog extends DialogFragment {
             @Override
             public void onSuccess(byte[] response) {
                 try {
-                    GifDrawable drawable = new GifDrawable(response);
-                    gifImageView.setImageDrawable(drawable);
-                } catch (IOException e) {
+                    Bitmap img = BitmapFactory.decodeByteArray(response, 0, response.length);
+                    gifImageView.setImageBitmap(img);
+                    gifImageView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
